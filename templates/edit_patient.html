@@ -1,7 +1,56 @@
-{% extends "base.html" %}
-
+{% extends "index.html" %}
+{% block title %}Edit Patient{% endblock %}
 {% block content %}
+<div class="form-container">
+    <h3>Edit Patient</h3>
+    <form method="POST">
+        <div class="form-group">
+            <label>First Name</label>
+            <input type="text" name="first_name" value="{{ patient.first_name }}" required>
+        </div>
 
-<!--EDIT PATIENT FORM/-->
+        <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" name="middle_name" value="{{ patient.middle_name }}">
+        </div>
 
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="last_name" value="{{ patient.last_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Gender</label>
+            <select name="gender">
+                <option value="Male" {% if patient.gender == 'Male' %}selected{% endif %}>Male</option>
+                <option value="Female" {% if patient.gender == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" name="dob" value="{{ patient.date_of_birth }}">
+        </div>
+
+        <div class="form-group">
+            <label>Age</label>
+            <input type="number" name="age" value="{{ patient.age }}">
+        </div>
+
+        <div class="form-group">
+            <label>Contact No.</label>
+            <input type="text" name="contact_no" value="{{ patient.contact_no }}">
+        </div>
+
+        <div class="form-group">
+            <label>Address</label>
+            <textarea name="address">{{ patient.address }}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-save">Update</button>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-delete">Cancel</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

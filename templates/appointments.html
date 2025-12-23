@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block title %}Appointments{% endblock %}
+{% block content %}
+<div class="header">
+    <h3>Appointments Table</h3>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Patient ID</th>
+            <th>Doctor ID</th>
+            <th>Purpose</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for app in appointments %}
+        <tr>
+            <td>{{ app.patient_id }}</td>
+            <td>{{ app.doctor_id }}</td>
+            <td>{{ app.purpose }}</td>
+            <td>{{ app.status }}</td>
+            <td>{{ app.appointment_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ app.appointment_time.strftime('%H:%M') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">No appointments found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

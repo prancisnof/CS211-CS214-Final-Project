@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+{% block title %}Patient Details{% endblock %}
+{% block content %}
+<div class="patient-details">
+    <h3>Patient Details</h3>
+    <p><strong>Case No:</strong> {{ patient.case_no }}</p>
+    <p><strong>Name:</strong> {{ patient.first_name }} {{ patient.middle_name }} {{ patient.last_name }}</p>
+    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+    <p><strong>Age:</strong> {{ patient.age }}</p>
+    <p><strong>Contact:</strong> {{ patient.contact_no }}</p>
+    <p><strong>Address:</strong> {{ patient.address }}</p>
+    <p><strong>Date of Birth:</strong> {{ patient.date_of_birth.strftime('%Y-%m-%d') }}</p>
+
+    <br><hr><br>
+    <h4>Medical Records</h4>
+    {% for record in medical_records %}
+        <p>{{ record.diagnosis }} (Doctor: {{ record.doctor_name }})</p>
+    {% else %}
+        <p>No medical records found.</p>
+    {% endfor %}
+
+    <br><hr><br>
+    <h4>Prescriptions</h4>
+    {% for pres in prescriptions %}
+        <p>{{ pres.medicine_name }} - {{ pres.dosage }}</p>
+    {% else %}
+        <p>No prescriptions found.</p>
+    {% endfor %}
+
+    <br><hr><br>
+    <h4>Appointments</h4>
+    {% for app in appointments %}
+        <p>{{ app.purpose }} on {{ app.appointment_date.strftime('%Y-%m-%d') }}</p>
+    {% else %}
+        <p>No appointments found.</p>
+    {% endfor %}
+
+    <br><hr><br>
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

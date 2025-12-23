@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+{% block title %}Doctors{% endblock %}
+{% block content %}
+<div class="header">
+    <h3>Doctors Table</h3>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>License No.</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Specialization</th>
+            <th>Room</th>
+            <th>Schedule</th>
+            <th>Phone</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for doctor in doctors %}
+        <tr>
+            <td>{{ doctor.license_no }}</td>
+            <td>{{ doctor.first_name }}</td>
+            <td>{{ doctor.last_name }}</td>
+            <td>{{ doctor.specialization }}</td>
+            <td>{{ doctor.room_number }}</td>
+            <td>{{ doctor.schedule_days }}</td>
+            <td>{{ doctor.phone }}</td>
+            <td>{{ doctor.email }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8">No doctors found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

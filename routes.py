@@ -1,92 +1,124 @@
-from flask import Blueprint, render_template, request, redirect, url_for, make_response
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import db, Patient, MedicalRecord, Doctor, Appointment, Prescription
 from datetime import datetime
 
 main = Blueprint('main', __name__)
 
 # =========================================================
-# --- READ: Dashboard ---
+# --- READ: Dashboard (Patients) ---
 # =========================================================
-
-# This is the homepage.
 @main.route('/')
 def dashboard():
     patients = Patient.query.all()
-    # Render the 'dashboard.html' template and pass the list of patients to it for display.
     return render_template('dashboard.html', patients=patients)
 
-
 # =========================================================
-#  --- CREATE: Add Patient ---
+# --- CREATE: Add Patient ---
 # =========================================================
-
 @main.route('/add', methods=['GET', 'POST'])
 def add_patient():
     if request.method == 'POST':
-        # Generate a new case number by counting existing patients and adding 1.
         count = Patient.query.count() + 1
-        # Format the case number as a string like "P-01".
         case_no = f"P-{count:02d}"
-        
-        # Create a new Patient object using data coming from the HTML form.
+
         new_patient = Patient(
-            case_no = case_no,                                
-            first_name = request.form['first_name'],         
-            last_name = request.form['last_name'],           
-            middle_name = request.form.get('middle_name'),   
-            gender = request.form['gender'],                
-            age = request.form['age'],                       
-            contact_no = request.form['contact_no'],      
-            address = request.form['address'],             
-        # Convert the date string (YYYY-MM-DD) from the form into a Python date object.
+            case_no=case_no,
+            first_name=request.form['first_name'],
+            last_name=request.form['last_name'],
+            middle_name=request.form.get('middle_name'),
+            gender=request.form['gender'],
+            age=request.form['age'],
+            contact_no=request.form['contact_no'],
+            address=request.form['address'],
             date_of_birth=datetime.strptime(request.form['dob'], '%Y-%m-%d').date()
         )
-        # Add the new patient object to the current database session.
         db.session.add(new_patient)
-        # Commit the session to save the new patient into the database.
         db.session.commit()
-        # Redirect the user back to the main dashboard after successful saving.
+        flash("Patient added successfully!", "success")
         return redirect(url_for('main.dashboard'))
     return render_template('add_patient.html')
 
-
 # =========================================================
-#  --- UPDATE: Edit Patient ---
+# --- UPDATE: Edit Patient ---
 # =========================================================
-
-# Edit patient route
 @main.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_patient(id):
-    # Fetch the patient or 404 if not found.
     patient = Patient.query.get_or_404(id)
 
-    # Check if the form is being submitted with new data.
     if request.method == 'POST':
-        # Update the existing patient object's attributes with the new form data.
         patient.first_name = request.form['first_name']
+        patient.middle_name = request.form.get('middle_name')
         patient.last_name = request.form['last_name']
         patient.gender = request.form['gender']
+        patient.age = request.form['age']
         patient.contact_no = request.form['contact_no']
-        
+        patient.address = request.form['address']
+        patient.date_of_birth = datetime.strptime(request.form['dob'], '%Y-%m-%d').date()
+
         db.session.commit()
-        # Redirect back to the dashboard.
+        flash("Patient updated successfully!", "info")
         return redirect(url_for('main.dashboard'))
     return render_template('edit_patient.html', patient=patient)
 
-
 # =========================================================
-#  --- DELETE: Remove Patient ---
+# --- DELETE: Remove Patient (POST safer) ---
 # =========================================================
-
-# Deleting patient route
-@main.route('/delete/<int:id>')
+@main.route('/delete/<int:id>', methods=['POST'])
 def delete_patient(id):
-    # Fetch the patient or 404 if not found.
     patient = Patient.query.get_or_404(id)
-    
-    # Mark the patient object for deletion in the database session.
     db.session.delete(patient)
-    
-    # Commit the transaction to permanently remove the row.
     db.session.commit()
+    flash("Patient deleted successfully!", "danger")
     return redirect(url_for('main.dashboard'))
+
+# =========================================================
+# --- VIEW: Patient Details ---
+# =========================================================
+@main.route('/patient/<int:id>')
+def patient_details(id):
+    patient = Patient.query.get_or_404(id)
+
+    # Related records
+    medical_records = MedicalRecord.query.filter_by(patient_id=id).all()
+    prescriptions = Prescription.query.join(MedicalRecord).filter(MedicalRecord.patient_id == id).all()
+    appointments = Appointment.query.filter_by(patient_id=id).all()
+
+    return render_template(
+        'patient_details.html',
+        patient=patient,
+        medical_records=medical_records,
+        prescriptions=prescriptions,
+        appointments=appointments
+    )
+
+# =========================================================
+# --- VIEW: Doctors ---
+# =========================================================
+@main.route('/doctors')
+def doctors():
+    doctors = Doctor.query.all()
+    return render_template('doctors.html', doctors=doctors)
+
+# =========================================================
+# --- VIEW: Medical Records ---
+# =========================================================
+@main.route('/records')
+def records():
+    records = MedicalRecord.query.all()
+    return render_template('records.html', records=records)
+
+# =========================================================
+# --- VIEW: Prescriptions ---
+# =========================================================
+@main.route('/prescriptions')
+def prescriptions():
+    prescriptions = Prescription.query.all()
+    return render_template('prescriptions.html', prescriptions=prescriptions)
+
+# =========================================================
+# --- VIEW: Appointments ---
+# =========================================================
+@main.route('/appointments')
+def appointments():
+    appointments = Appointment.query.all()
+    return render_template('appointments.html', appointments=appointments)

@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+{% block title %}Medical Records{% endblock %}
+{% block content %}
+<div class="header">
+    <h3>Medical Records Table</h3>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Patient ID</th>
+            <th>Doctor</th>
+            <th>Diagnosis</th>
+            <th>Symptoms</th>
+            <th>Blood Pressure</th>
+            <th>Weight (kg)</th>
+            <th>Height (cm)</th>
+            <th>Visit Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.patient_id }}</td>
+            <td>{{ record.doctor_name }}</td>
+            <td>{{ record.diagnosis }}</td>
+            <td>{{ record.symptoms }}</td>
+            <td>{{ record.blood_pressure }}</td>
+            <td>{{ record.weight_kg }}</td>
+            <td>{{ record.height_cm }}</td>
+            <td>{{ record.visit_date.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8">No medical records found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

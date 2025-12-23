@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% block title %}Prescriptions{% endblock %}
+{% block content %}
+<div class="header">
+    <h3>Prescriptions Table</h3>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Record ID</th>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Frequency</th>
+            <th>Duration</th>
+            <th>Quantity</th>
+            <th>Date Issued</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pres in prescriptions %}
+        <tr>
+            <td>{{ pres.record_id }}</td>
+            <td>{{ pres.medicine_name }}</td>
+            <td>{{ pres.dosage }}</td>
+            <td>{{ pres.frequency }}</td>
+            <td>{{ pres.duration }}</td>
+            <td>{{ pres.quantity }}</td>
+            <td>{{ pres.date_issued.strftime('%Y-%m-%d') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">No prescriptions found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
