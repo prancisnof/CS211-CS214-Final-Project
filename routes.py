@@ -11,7 +11,6 @@ main = Blueprint('main', __name__)
 # This is the homepage.
 @main.route('/')
 def dashboard():
-    # Query the database to get a list of all rows in the 'Patient' table.
     patients = Patient.query.all()
     # Render the 'dashboard.html' template and pass the list of patients to it for display.
     return render_template('dashboard.html', patients=patients)
